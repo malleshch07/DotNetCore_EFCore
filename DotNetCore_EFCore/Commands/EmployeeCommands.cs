@@ -3,6 +3,7 @@ using DotNetCore_EFCore_CQRS.Model;
 using DotNetCore_EFCore_CQRS.Repositories;
 using DotNetCore_EFCore_CQRS.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DotNetCore_EFCore_CQRS.Commands
 {
@@ -18,7 +19,7 @@ namespace DotNetCore_EFCore_CQRS.Commands
             _Context = context;
             _IEmpCommandRepo = IEmpCmdRepo;
         }
-        public int SaveEmployee(EmployeeDto DTO)
+        public async Task<int> SaveEmployee(EmployeeDto DTO)
         {
 
 
@@ -41,7 +42,7 @@ namespace DotNetCore_EFCore_CQRS.Commands
 
                 throw new Exception("user exist already");
             }
-            _IEmpCommandRepo.SaveEmployee(employee);
+        await    _IEmpCommandRepo.SaveEmployee(employee);
             return employee.Id;
 
         }
@@ -50,6 +51,15 @@ namespace DotNetCore_EFCore_CQRS.Commands
         {
 
             return _IEmpCommandRepo.GetEmployee();
+        }
+
+        public async Task<List<EmployeeDto>> GetEmployeewithDepartment(int? deptId)
+        {
+
+           return await _IEmpCommandRepo.GetEmployeewithDepartment(deptId);
+
+
+
         }
 
 

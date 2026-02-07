@@ -5,8 +5,9 @@ namespace DotNetCore_EFCore_CQRS.Commands
 {
     public interface IEmployeeCommands
     {
-        int SaveEmployee(EmployeeDto emp);
+        Task<int> SaveEmployee(EmployeeDto emp);
         Task<List<EmployeeDto>> GetEmployee();
+        Task<List<EmployeeDto>> GetEmployeewithDepartment(int? deptId);
 
     }
 }

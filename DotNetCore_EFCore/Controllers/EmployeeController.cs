@@ -21,20 +21,27 @@ namespace DotNetCore_EFCore_CQRS.Controllers
 
         [HttpPost]
         [Route("SaveEmployee")]
-        public IActionResult saveEmployee([FromBody] EmployeeDto DTO)
+        public async Task<IActionResult> saveEmployee([FromBody] EmployeeDto DTO)
         {
 
-            var empid = _IEmployee.SaveEmployee(DTO);
+            var empid = await _IEmployee.SaveEmployee(DTO);
             return Ok(empid);
         }
 
         [HttpGet]
         [Route("GetEmployee")]
-        public Task<List<EmployeeDto>> GetEmployee()
+        public async Task<List<EmployeeDto>> GetEmployee()
         {
 
-            return _IEmployee.GetEmployee();
-        
+            return await _IEmployee.GetEmployee();
+
+        }
+
+        [HttpGet]
+        [Route("GetEmployeeByDepartment/")]
+        public async Task<List<EmployeeDto>> GetEmployeewithDepartment([FromQuery] int? deptId)
+        {
+            return await _IEmployee.GetEmployeewithDepartment(deptId);
         }
 
     }

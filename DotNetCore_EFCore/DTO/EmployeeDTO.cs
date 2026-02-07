@@ -6,7 +6,7 @@ namespace DotNetCore_EFCore_CQRS.DTO
     {
         public string EName { get; set; }
         public string EAddress { get; set; }
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
         public decimal Salary { get; set; }
         public long Mobile { get; set; }
         public int? DepartmentId { get; set; }

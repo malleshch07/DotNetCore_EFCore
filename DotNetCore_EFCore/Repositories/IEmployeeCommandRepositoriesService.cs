@@ -8,10 +8,11 @@ namespace DotNetCore_EFCore_CQRS.Repositories
     public interface IEmployeeCommandRepositoriesService
     {
 
-        Task SaveEmployee(Employee emp);
+        Task<int> SaveEmployee(Employee emp);
 
         bool CheckByName(string strEName);
         Task<List<EmployeeDto>> GetEmployee();
+        Task<List<EmployeeDto>> GetEmployeewithDepartment(int? deptId);
 
     }
 
