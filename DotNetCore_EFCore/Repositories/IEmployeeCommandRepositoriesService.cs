@@ -13,6 +13,8 @@ namespace DotNetCore_EFCore_CQRS.Repositories
         bool CheckByName(string strEName);
         Task<List<EmployeeDto>> GetEmployee();
         Task<List<EmployeeDto>> GetEmployeewithDepartment(int? deptId);
+        //Task<List<EmployeeDto>> GetEmployeewithDepartwithEFlazyload();
+        Task<List<EmployeeDto>> GetEmployeewithDepartwithEFExplictLoading();
 
     }
 

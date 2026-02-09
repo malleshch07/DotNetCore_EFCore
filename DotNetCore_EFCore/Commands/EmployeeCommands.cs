@@ -61,6 +61,23 @@ namespace DotNetCore_EFCore_CQRS.Commands
 
 
         }
+        //public async Task<List<EmployeeDto>> GetEmployeewithDepartwithEFlazyload()
+        //{
+
+        //   return await _IEmpCommandRepo.GetEmployeewithDepartwithEFlazyload();
+
+
+
+        //}
+
+        public async Task<List<EmployeeDto>> GetEmployeewithDepartwithEFExplictLoading()
+        {
+
+            return await _IEmpCommandRepo.GetEmployeewithDepartwithEFExplictLoading();
+
+
+
+        }
 
 
     }

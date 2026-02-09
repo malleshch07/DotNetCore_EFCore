@@ -18,7 +18,8 @@ namespace DotNetCore_EFCore
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+            builder.Services.AddDbContext<AppDBContext>(options => options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")).UseLazyLoadingProxies().EnableSensitiveDataLogging()
+           .LogTo(Console.WriteLine));
             builder.Services.AddScoped<IEmployeeCommands, EmployeeCommands>();
             builder.Services.AddScoped<IEmployeeCommandRepositoriesService, EmployeeCommandRepositoriesService>();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

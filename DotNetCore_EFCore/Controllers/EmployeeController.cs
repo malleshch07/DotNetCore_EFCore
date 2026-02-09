@@ -44,5 +44,20 @@ namespace DotNetCore_EFCore_CQRS.Controllers
             return await _IEmployee.GetEmployeewithDepartment(deptId);
         }
 
+        //[HttpGet]
+        //[Route("GetEmployeewithDepartwithEFlazyload")]
+        //public async Task<List<EmployeeDto>> GetEmployeewithDepartwithEFlazyload()
+        //{
+        //    return await _IEmployee.GetEmployeewithDepartwithEFlazyload();
+        //}
+
+
+        [HttpGet]
+        [Route("GetEmployeewithDepartwithEFExplictLoading")]
+        public async Task<List<EmployeeDto>> GetEmployeewithDepartwithEFExplictLoading()
+        {
+            return await _IEmployee.GetEmployeewithDepartwithEFExplictLoading();
+        }
+
     }
 }

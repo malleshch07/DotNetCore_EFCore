@@ -12,7 +12,7 @@ namespace DotNetCore_EFCore_CQRS.Model
         public decimal Salary { get; set; }
         public long? Mobile { get; set; }
         public int? DepartmentId { get; set; }
-
-        public Department Department { get; set; }
+        //made virtual for lazy loading else not needed
+        public virtual Department Department { get; set; }
     }
 }

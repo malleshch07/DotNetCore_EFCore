@@ -11,10 +11,16 @@ namespace DotNetCore_EFCore_CQRS.Repositories
         private readonly AppDBContext _Context;
 
         private readonly IMapper _mapper;
-        public EmployeeCommandRepositoriesService(AppDBContext context,IMapper mapper)
+
+        //didnt worked need to go with theory lazyloading
+        //private readonly IServiceScopeFactory _scopeFactory;
+        public EmployeeCommandRepositoriesService(AppDBContext context, IMapper mapper /* ,IServiceScopeFactory scopeFactory*/)
         {
             _Context = context;
             _mapper = mapper;
+            //didnt worked need to go with theory lazyloading
+            //_scopeFactory = scopeFactory;
+
         }
         public async Task<int> SaveEmployee(Employee empDetails)
         {
@@ -55,7 +61,7 @@ namespace DotNetCore_EFCore_CQRS.Repositories
 
 
             // mapper  way
-            var emp = await _Context.employee.Where(x => x.IsActive == true).OrderBy(e => e.Id).Skip((page-1)*size).Take(size).AsNoTracking().ToListAsync();
+            var emp = await _Context.employee.Where(x => x.IsActive == true).OrderBy(e => e.Id).Skip((page - 1) * size).Take(size).AsNoTracking().ToListAsync();
             return _mapper.Map<List<EmployeeDto>>(emp);
 
 
@@ -76,7 +82,7 @@ namespace DotNetCore_EFCore_CQRS.Repositories
         public async Task<List<EmployeeDto>> GetEmployeewithDepartment(int? deptId)
         {
             // only loads employee columns as DepartmentId also present so it loades departmentid but not Departmentdata of the each employee
-            var employeonly= await _Context.employee.ToListAsync();
+            var employeonly = await _Context.employee.ToListAsync();
             //  loads employee columns and department table  loades  Departmentdata of the each employee as we added include.
 
             var employewithDepart = await _Context.employee.Include(e => e.Department).ToListAsync();
@@ -87,7 +93,7 @@ namespace DotNetCore_EFCore_CQRS.Repositories
             // few fileds as select is simlar to DB select
 
 
-            var emponlyselect= await _Context.employee.Select(e => new EmployeeDto
+            var emponlyselect = await _Context.employee.Select(e => new EmployeeDto
             {
                 EAddress = e.EAddress,
                 IsActive = e.IsActive,
@@ -96,12 +102,12 @@ namespace DotNetCore_EFCore_CQRS.Repositories
                 EName = e.EName
             }).ToListAsync();
 
-            var empwithDepartselect = await _Context.employee.Include(e=>e.Department).Select(e => new EmployeeDto
+            var empwithDepartselect = await _Context.employee.Include(e => e.Department).Select(e => new EmployeeDto
             {
                 EAddress = e.EAddress,
                 IsActive = e.IsActive,
                 DepartmentId = e.DepartmentId,
-                DepartmentName = e.Department != null? e.Department.DepartmentName:null,
+                DepartmentName = e.Department != null ? e.Department.DepartmentName : null,
                 EName = e.EName
             }).ToListAsync();
 
@@ -115,11 +121,11 @@ namespace DotNetCore_EFCore_CQRS.Repositories
             var empwithDepartIncludeWHere1 = _Context.employee.Include(e => e.Department).Where(x => x.IsActive == true).ToListAsync();
             // order by
             var EmpwithDepartInclideOrderBy = _Context.employee.Where(x => x.EAddress.Contains("Hi")).Include(e => e.Department).OrderBy(x => x.EName).ToListAsync();
-           
+
             // all options
-            
+
             var Empalloptions = _Context.employee.AsNoTracking()
-                .Where(x => x.Salary > 1000 && (x.DepartmentId== deptId || x.Department.DepartmentName=="HR"))
+                .Where(x => x.Salary > 1000 && (x.DepartmentId == deptId || x.Department.DepartmentName == "HR"))
                 .Include(x => x.Department)
                 .OrderByDescending(x => x.Salary)
                 .Skip(1)
@@ -128,16 +134,16 @@ namespace DotNetCore_EFCore_CQRS.Repositories
                     EAddress = e.EAddress,
                     DepartmentName = e.Department != null ? e.Department.DepartmentName : null,
                     Salary = e.Salary,
-                    DepartmentId= e.DepartmentId
+                    DepartmentId = e.DepartmentId
                 }).ToListAsync();
 
-            var empany = _Context.employee.AnyAsync(x => x.IsActive==true);
+            var empany = _Context.employee.AnyAsync(x => x.IsActive == true);
 
 
 
             //group by
 
-            var empgroupby = await _Context.employee.Where(x=>x.DepartmentId!= null).GroupBy(f => f.Department.Id).Select(x => new
+            var empgroupby = await _Context.employee.Where(x => x.DepartmentId != null).GroupBy(f => f.Department.Id).Select(x => new
             {
                 depart = x.Key,
                 count = x.Count()
@@ -151,6 +157,37 @@ namespace DotNetCore_EFCore_CQRS.Repositories
 
 
 
+
+        }
+        //didnt worked need to go with theory lazyloading
+        //public async Task<List<EmployeeDto>> GetEmployeewithDepartwithEFlazyload()
+        //    {
+        //        using var scope = _scopeFactory.CreateScope();
+        //        var context = scope.ServiceProvider
+        //            .GetRequiredService<AppDBContext>();
+        //        context.ChangeTracker.Clear();
+
+        //        var emp =await context.employee.Where(x => x.IsActive == true).ToListAsync();
+
+
+        //        foreach (var e in emp)
+        //        {
+        //            var dept = e?.Department?.DepartmentName;
+        //            Console.WriteLine($"the depart{e?.DepartmentId} name {e?.Department?.DepartmentName} employee {e.EName}");
+        //        }
+
+        //        return _mapper.Map<List<EmployeeDto>>(emp);        
+
+
+        public async Task<List<EmployeeDto>> GetEmployeewithDepartwithEFExplictLoading()
+        {
+            var emp = await _Context.employee.Where(x => x.DepartmentId > 0).FirstAsync();
+
+            await _Context.Entry(emp)
+     .Reference(e => e.Department)
+     .LoadAsync();
+
+            return _mapper.Map<List<EmployeeDto>>(emp);
 
         }
     }

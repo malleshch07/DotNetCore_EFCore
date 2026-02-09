@@ -8,6 +8,8 @@ namespace DotNetCore_EFCore_CQRS.Commands
         Task<int> SaveEmployee(EmployeeDto emp);
         Task<List<EmployeeDto>> GetEmployee();
         Task<List<EmployeeDto>> GetEmployeewithDepartment(int? deptId);
+        //Task<List<EmployeeDto>> GetEmployeewithDepartwithEFlazyload();
+        Task<List<EmployeeDto>> GetEmployeewithDepartwithEFExplictLoading();
 
     }
 }
