@@ -22,6 +22,9 @@ namespace DotNetCore_EFCore
            .LogTo(Console.WriteLine));
             builder.Services.AddScoped<IEmployeeCommands, EmployeeCommands>();
             builder.Services.AddScoped<IEmployeeCommandRepositoriesService, EmployeeCommandRepositoriesService>();
+
+            builder.Services.AddScoped<IEmployeeQuery, EmployeeQuery>();
+            builder.Services.AddScoped<IEmployeeQueryRepositoriesService, EmployeeQueryRepositoriesService>();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             
             var app = builder.Build();

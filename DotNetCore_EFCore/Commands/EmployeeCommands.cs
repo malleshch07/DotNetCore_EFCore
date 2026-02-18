@@ -4,6 +4,7 @@ using DotNetCore_EFCore_CQRS.Repositories;
 using DotNetCore_EFCore_CQRS.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace DotNetCore_EFCore_CQRS.Commands
 {
@@ -78,7 +79,5 @@ namespace DotNetCore_EFCore_CQRS.Commands
 
 
         }
-
-
     }
 }

@@ -14,6 +14,7 @@ namespace DotNetCore_EFCore_CQRS.Services
         }
 
         public DbSet<Employee> employee { get; set; }
+        public DbSet<Department> department { get; set; }
 
 
 
