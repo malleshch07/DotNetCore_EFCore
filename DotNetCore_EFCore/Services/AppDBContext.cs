@@ -39,8 +39,8 @@ namespace DotNetCore_EFCore_CQRS.Services
                 entity.Property<DateTime>("UpdatedDate");
                 entity.Property<bool>("IsDeleted");
                 // 🔥 SHADOW PROPERTIES (MUST BE DECLARED)
-                entity.Property<string>("CreatedBy");
-                entity.Property<DateTime>("UpdatedDate");
+                entity.Property<string?>("CreatedBy");
+                entity.Property<DateTime?>("UpdatedDate");
                 entity.Property<bool>("IsDeleted");
                 // 🔥 OPTIONAL: soft delete filter
 

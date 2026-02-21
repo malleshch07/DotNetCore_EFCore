@@ -1,6 +1,7 @@
 ﻿using DotNetCore_EFCore_CQRS.Commands;
 using DotNetCore_EFCore_CQRS.DTO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotNetCore_EFCore_CQRS.Controllers
@@ -22,8 +23,58 @@ namespace DotNetCore_EFCore_CQRS.Controllers
         [Route("GetEmployeeDataBylinq")]
         public async Task<ActionResult<List<EmployeeDto>>> GetEmployeeDataBylinq()
         {
-           var emp=await _IEmpQuery.GetEmployeeDataBylinq();
+            var emp = await _IEmpQuery.GetEmployeeDataBylinq();
 
+            return emp;
+        }
+
+        [HttpGet]
+        [Route("GetEmployeeDetailsById/{id}")]
+        public async Task<IActionResult> GetEmployeeDetailsById(int id)
+        {
+
+            var emp = await _IEmpQuery.GetEmployeeDetailsById(id);
+
+            if (emp == null)
+                return NotFound();
+            return Ok(emp);
+
+
+        }
+
+        [HttpGet]
+        [Route("GetEmployeeDetailsBydynamicSort/{sortby}")]
+        public async Task<IActionResult> GetEmployeeDetailsBydynamicSort(string  sortby)
+        {
+
+            var emp = await _IEmpQuery.GetEmployeeDetailsBydynamicSort(sortby);
+
+            if (emp == null)
+                return NotFound();
+            return Ok(emp);
+        }
+
+
+        [HttpGet]
+        [Route("GetEmployeebyPageSize")]
+        public async Task<IActionResult> GetEmployeebyPageSize(int Pagesize, int pagenumber)
+        {
+
+            var emp = await _IEmpQuery.GetEmployeebyPageSize(pagenumber, Pagesize);
+
+            if (emp == null)
+                return NotFound();
+            return Ok(emp);
+        }
+        [HttpGet]
+        [Route("GetEmployeebyCount_Any_LongCount")]
+        public async Task<IActionResult> GetEmployeebyCount_Any_LongCount(string name)
+        {
+
+            var emp = await _IEmpQuery.GetEmployeebyCount_Any_LongCount( name);
+
+            if (emp == null)
+                return NotFound();
             return Ok(emp);
         }
     }
