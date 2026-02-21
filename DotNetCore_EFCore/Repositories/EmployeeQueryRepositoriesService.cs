@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.Execution;
+using Castle.Core.Logging;
 using DotNetCore_EFCore_CQRS.DTO;
 using DotNetCore_EFCore_CQRS.Model;
 using DotNetCore_EFCore_CQRS.Services;
@@ -190,7 +191,7 @@ namespace DotNetCore_EFCore_CQRS.Repositories
             }
             if (countrecords > 0)
             {
-                 emp = await _context.employee.Where(x => x.EName != name).ToListAsync();
+                emp = await _context.employee.Where(x => x.EName != name).ToListAsync();
             }
             return new
             {
@@ -206,6 +207,90 @@ namespace DotNetCore_EFCore_CQRS.Repositories
                 }),
             };
 
+        }
+        public async Task<dynamic> GetEmployeebyFirstOrSingle(string name)
+        {
+
+            // throws error if no record
+
+            if (await _context.employee.AnyAsync(x => x.EName.Contains(name)))
+            {
+                var first = await _context.employee.Where(x => x.EName.Contains(name)).FirstAsync();
+                var first1 = await _context.employee.FirstAsync(x => x.EName.Contains(name));
+            }
+            //  if no record return null
+
+            var firstorDefault = await _context.employee.FirstOrDefaultAsync(x => x.EName.Contains(name));
+
+            // throws error if no record or 2 reocrds found
+
+
+            var count = await _context.employee.CountAsync(x => x.EName.Contains(name));
+
+            if (count == 1)
+            {
+                var single = await _context.employee.SingleAsync(x => x.EName.Contains(name));
+            }
+
+            var singleOrDefault = await _context.employee.SingleOrDefaultAsync(x => x.EName.Contains(name));
+
+            var emp = await _context.employee.Where(x => EF.Functions.Like(x.EName, $"%{name}%")).Select(x => new EmployeeDto
+            {
+                EName = x.EName,
+                EAddress = x.EAddress
+            }).ToListAsync();
+            return (emp);
+        }
+        public async Task<dynamic> GetEmployeebyJoinDepart()
+        {
+
+            var emp = await (from e in _context.employee
+                             join d in _context.department
+                             on e.DepartmentId equals d.Id
+                             select new EmployeeDto
+                             {
+
+                                 EAddress = e.EAddress,
+                                 DepartmentName = d.DepartmentName,
+                                 DepartmentId = e.DepartmentId,
+                                 Salary = e.Salary,
+                                 IsActive = e.IsActive
+
+                             }).ToListAsync();
+
+
+            var empLeftJoin = await (from e in _context.employee
+                                     join d in _context.department
+                                     on e.DepartmentId equals d.Id into gj
+                                     from g in gj.DefaultIfEmpty()
+                                     select new EmployeeDto
+                                     {
+                                         EAddress = e.EAddress
+                                     ,
+                                         Salary = e.Salary,
+                                         DepartmentId = e.DepartmentId
+                                     ,
+                                         DepartmentName = g.DepartmentName,
+                                         EName = e.EName
+                                     }).ToListAsync();
+
+
+            // works like left join as we included
+            var empMethodmode = await _context.employee.Include(e => e.Department).Select(x => new EmployeeDto
+            {
+                EName = x.EName,
+                DepartmentName = x.Department != null ? x.Department.DepartmentName : null
+
+            }).ToListAsync();
+
+            var empmethodwithinnerjoin = await _context.employee.Where(x => x.Department != null).Include(x => x.Department).Select(x => new EmployeeDto
+
+            {
+                EName = x.EName,
+                DepartmentName = x.Department != null ? x.Department.DepartmentName : null
+            }).ToListAsync();
+
+            return (emp);
         }
 
 

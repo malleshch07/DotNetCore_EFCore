@@ -38,8 +38,6 @@ namespace DotNetCore_EFCore_CQRS.Controllers
             if (emp == null)
                 return NotFound();
             return Ok(emp);
-
-
         }
 
         [HttpGet]
@@ -72,6 +70,30 @@ namespace DotNetCore_EFCore_CQRS.Controllers
         {
 
             var emp = await _IEmpQuery.GetEmployeebyCount_Any_LongCount( name);
+
+            if (emp == null)
+                return NotFound();
+            return Ok(emp);
+        }
+        [HttpGet]
+        [Route("GetEmployeebyFirstOrSingle/{name}")]
+        public async Task<IActionResult> GetEmployeebyFirstOrSingle(string name)
+        {
+
+            var emp = await _IEmpQuery.GetEmployeebyFirstOrSingle( name);
+
+            if (emp == null)
+                return NotFound();
+            return Ok(emp);
+        }
+
+
+        [HttpGet]
+        [Route("GetEmployeebyJoinDepart")]
+        public async Task<IActionResult> GetEmployeebyJoinDepart()
+        {
+
+            var emp = await _IEmpQuery.GetEmployeebyJoinDepart();
 
             if (emp == null)
                 return NotFound();

@@ -9,5 +9,7 @@ namespace DotNetCore_EFCore_CQRS.Commands
         Task<EmployeeDto> GetEmployeeDetailsBydynamicSort(string sortby);
         Task<dynamic> GetEmployeebyPageSize(int pagenumber, int Pagesize);
         Task<dynamic> GetEmployeebyCount_Any_LongCount(string name);
+        Task<dynamic> GetEmployeebyFirstOrSingle(string name);
+        Task<dynamic> GetEmployeebyJoinDepart();
     }
 }

@@ -12,5 +12,9 @@ namespace DotNetCore_EFCore_CQRS.DTO
         public int? DepartmentId { get; set; }
 
         public string DepartmentName { get; set; }
+        public int? DesignationId { get; set; }
+
+        public string DesignationTitle { get; set; }
+        public string DesignationGrade { get; set; }
     }
 }

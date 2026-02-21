@@ -15,6 +15,7 @@ namespace DotNetCore_EFCore_CQRS.Services
 
         public DbSet<Employee> employee { get; set; }
         public DbSet<Department> department { get; set; }
+        public DbSet<Designation> designation { get; set; }
 
 
 
@@ -51,10 +52,16 @@ namespace DotNetCore_EFCore_CQRS.Services
                 .HasForeignKey(e => e.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+                entity.HasOne(e => e.Designation)
+                .WithMany(d => d.Employees)
+                .HasForeignKey(e => e.DesignationId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             });
 
 
             modelBuilder.Entity<Department>(entity => entity.ToTable("tblDepartment"));
+            modelBuilder.Entity<Designation>(entity => entity.ToTable("tblDesignation"));
 
 
 

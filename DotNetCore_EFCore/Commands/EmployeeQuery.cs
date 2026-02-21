@@ -46,5 +46,18 @@ namespace DotNetCore_EFCore_CQRS.Commands
 
             return await _IEmpQueryrepo.GetEmployeebyCount_Any_LongCount( name);
         }
+        public async Task<dynamic> GetEmployeebyFirstOrSingle(string name)
+        {
+
+
+            return await _IEmpQueryrepo.GetEmployeebyFirstOrSingle( name);
+        }
+
+        public async Task<dynamic> GetEmployeebyJoinDepart()
+        {
+
+
+            return await _IEmpQueryrepo.GetEmployeebyJoinDepart();
+        }
     }
 }
