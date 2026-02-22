@@ -6,7 +6,9 @@ using DotNetCore_EFCore_CQRS.Model;
 using DotNetCore_EFCore_CQRS.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Identity.Client.RP;
 using System.Net;
+using System.Security.AccessControl;
 
 namespace DotNetCore_EFCore_CQRS.Repositories
 {
@@ -291,6 +293,117 @@ namespace DotNetCore_EFCore_CQRS.Repositories
             }).ToListAsync();
 
             return (emp);
+        }
+        public async Task<dynamic> GetEmployeebyMutliJoin()
+        {
+
+            var emp = await (from e in _context.employee
+                             join d in _context.department
+                             on e.DepartmentId equals d.Id
+                             join de in _context.designation
+                             on e.DesignationId equals de.Id
+                             select new EmployeeDto
+                             {
+                                 EAddress = e.EAddress,
+                                 EName = e.EName,
+                                 DepartmentName = d.DepartmentName,
+                                 DesignationGrade = de.Grade,
+                                 DesignationTitle = de.Title,
+                                 Salary = e.Salary
+                             }).AsNoTracking().ToListAsync();
+
+
+
+            var empdefault = await (from e in _context.employee
+                             join d in _context.department
+                             on e.DepartmentId equals d.Id into GJ
+                             from d in GJ.DefaultIfEmpty()
+                             join de in _context.designation
+                             on e.DesignationId equals de.Id into GDJ
+                             from dee in GDJ.DefaultIfEmpty()
+                             select new EmployeeDto
+                             {
+                                 EAddress = e.EAddress,
+                                 DepartmentName = d!= null?d.DepartmentName:null,
+                                 DesignationGrade = dee.Grade,
+                                 DesignationTitle = dee.Title,
+                                 Mobile = e.Mobile,
+                                 Salary = e.Salary,
+                                 EName = e.EName,
+                             }).AsNoTracking().ToListAsync();
+
+            var empincludeinnerjoin = await _context.employee
+                .Where(x => x.Department != null && x.Designation != null)
+                .Include(x => x.Department).Include(x => x.Designation).Select(x => new EmployeeDto
+                {
+                    EAddress = x.EAddress,
+                    DepartmentName = x.Department != null ? x.Department.DepartmentName : null,
+                    DesignationGrade = x.Designation != null ? x.Designation.Grade : null,
+                    EName =x.EName,
+                    Salary=x.Salary,
+                    IsActive=x.IsActive
+
+                }).ToListAsync();
+
+            var empincludeleftjoin = await _context.employee.Include(x => x.Department).Include(x => x.Designation).Select(x => new EmployeeDto
+            {
+                EAddress = x.EAddress,
+                DepartmentName = x.Department != null ? x.Department.DepartmentName : null,
+                DesignationGrade = x.Designation != null ? x.Designation.Grade : null,
+                EName = x.EName,
+                Salary = x.Salary,
+                IsActive = x.IsActive
+            }).ToListAsync();
+
+            return (emp);
+        }
+        public async Task<dynamic> GetEmployeebyGroupBy()
+        {
+
+            var emp = await _context.employee.GroupBy(x => new { x.DepartmentId, x.Department.DepartmentName }).Select(x => new
+            {
+                Depart = x.Key,
+                deparmentName = x.Key.DepartmentName,
+                count = x.Count()
+            }).ToListAsync();
+
+
+            var empsqlLevel = await (from e in _context.employee
+                                     join
+                                     d in _context.department
+                                     on e.DepartmentId equals d.Id
+                                     group e by new { e.DepartmentId, d.DepartmentName } into Gb
+                                     select new
+                                     {
+                                         departName = Gb.Key.DepartmentName,
+                                         deprtid = Gb.Key.DepartmentId,
+                                         Countemp = Gb.Count()
+                                     }).ToListAsync();
+
+
+            var empwithleftjoinGroupby = await (from e in _context.employee
+                                                join d in _context.department
+                                                on e.DepartmentId equals d.Id
+                                                into ljd
+                                                from d in ljd.DefaultIfEmpty()
+                                                group e by new
+                                                {
+                                                    d.DepartmentName,
+                                                    e.EName,
+                                                    e.Salary
+
+                                                } into gb
+                                                select
+                                                  new
+                                                  {
+                                                      DepartmentName = gb.Key.DepartmentName,
+                                                      ename = gb.Key.EName,
+                                                      esal = gb.Key.Salary,
+                                                      count = gb.Count()
+
+
+                                                  }).ToListAsync();
+            return emp;
         }
 
 

@@ -59,5 +59,17 @@ namespace DotNetCore_EFCore_CQRS.Commands
 
             return await _IEmpQueryrepo.GetEmployeebyJoinDepart();
         }
+        public async Task<dynamic> GetEmployeebyMutliJoin()
+        {
+
+
+            return await _IEmpQueryrepo.GetEmployeebyMutliJoin();
+        }
+        public async Task<dynamic> GetEmployeebyGroupBy()
+        {
+
+
+            return await _IEmpQueryrepo.GetEmployeebyGroupBy();
+        }
     }
 }

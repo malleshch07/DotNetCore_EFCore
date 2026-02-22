@@ -12,5 +12,7 @@ namespace DotNetCore_EFCore_CQRS.Repositories
         Task<dynamic> GetEmployeebyCount_Any_LongCount(string name);
         Task<dynamic> GetEmployeebyFirstOrSingle(string name);
         Task<dynamic> GetEmployeebyJoinDepart();
+        Task<dynamic> GetEmployeebyMutliJoin();
+        Task<dynamic> GetEmployeebyGroupBy();
     }
 }

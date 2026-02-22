@@ -61,7 +61,7 @@ namespace DotNetCore_EFCore_CQRS.Services
 
 
             modelBuilder.Entity<Department>(entity => entity.ToTable("tblDepartment"));
-            modelBuilder.Entity<Designation>(entity => entity.ToTable("tblDesignation"));
+            modelBuilder.Entity<Designation>(entity => entity.ToTable("tblDesignations"));
 
 
 

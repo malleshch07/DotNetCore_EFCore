@@ -99,5 +99,28 @@ namespace DotNetCore_EFCore_CQRS.Controllers
                 return NotFound();
             return Ok(emp);
         }
+
+        [HttpGet]
+        [Route("GetEmployeebyMutliJoin")]
+        public async Task<IActionResult> GetEmployeebyMutliJoin()
+        {
+
+            var emp = await _IEmpQuery.GetEmployeebyMutliJoin();
+
+            if (emp == null)
+                return NotFound();
+            return Ok(emp);
+        }
+        [HttpGet]
+        [Route("GetEmployeebyGroupBy")]
+        public async Task<IActionResult> GetEmployeebyGroupBy()
+        {
+
+            var emp = await _IEmpQuery.GetEmployeebyGroupBy();
+
+            if (emp == null)
+                return NotFound();
+            return Ok(emp);
+        }
     }
 }
